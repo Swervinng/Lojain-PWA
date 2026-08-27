@@ -1,0 +1,1613 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#050308" id="themeColorMeta">
+<title>Lojain</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ctext y=%22.9em%22 font-size=%2290%22%3E%F0%9F%96%A4%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg-0:#050308;
+  --bg-1:#0c0716;
+  --bg-2:#170b24;
+  --wine:#4a0f28;
+  --crimson:#9c1240;
+  --rose:#ff5d7a;
+  --rose-soft:#ff9db0;
+  --rose-glow:rgba(255,93,122,.4);
+  --ink:#f6ecec;
+  --ink-soft:#c9b6c2;
+  --ink-mute:#8b7a8c;
+  --line:rgba(255,255,255,.1);
+  --card-bg:rgba(255,255,255,.04);
+  --card-bg-hover:rgba(255,255,255,.07);
+  --font-display:'Aref Ruqaa',serif;
+  --font-body:'Tajawal',sans-serif;
+  --ease-slow:cubic-bezier(.22,.61,.36,1);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;background:var(--bg-0);overscroll-behavior:none;}
+body{
+  font-family:var(--font-body);color:var(--ink);direction:rtl;overflow:hidden;
+  -webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none;
+}
+input,button{font-family:inherit;}
+button{cursor:pointer;-webkit-tap-highlight-color:transparent;}
+#app-root{
+  position:fixed;inset:0;width:100%;height:100vh;height:100dvh;overflow:hidden;
+  padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom);
+}
+#stars-layer{
+  position:fixed;inset:0;z-index:0;opacity:0;transition:opacity 2.4s ease;pointer-events:none;
+  background:radial-gradient(ellipse at 50% 30%,var(--bg-2),var(--bg-0) 70%);
+}
+#stars-layer.show{opacity:1;}
+.star{position:absolute;border-radius:50%;background:#fff;opacity:0;}
+@keyframes twinkle{0%,100%{opacity:.15;}50%{opacity:.9;}}
+#bg-love{
+  position:fixed;inset:0;z-index:0;opacity:0;transition:opacity 3s ease;pointer-events:none;
+  background:radial-gradient(ellipse at 50% 35%,#7a1a3d,#2b0512 78%);
+}
+#bg-love.show{opacity:1;}
+#grain{
+  position:fixed;inset:0;z-index:1;opacity:.045;pointer-events:none;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+#particle-layer{position:fixed;inset:0;z-index:6;pointer-events:none;}
+.heart-particle{position:absolute;font-size:20px;will-change:transform,opacity;filter:drop-shadow(0 0 6px rgba(255,255,255,.85));}
+#explosion-flash{position:fixed;width:40px;height:40px;border-radius:50%;z-index:5;pointer-events:none;
+  background:radial-gradient(circle,#fff,var(--rose-soft) 40%,transparent 70%);}
+#hero-heart{position:fixed;z-index:3;opacity:0;pointer-events:none;filter:drop-shadow(0 0 26px var(--rose-glow));}
+#hero-heart svg{display:block;width:100%;height:100%;}
+.heart-scaler{width:100%;height:100%;}
+#hero-heart.heart--hero{top:36%;left:50%;width:110px;height:100px;transform:translate(-50%,-50%);}
+#hero-heart.heart--pinned{top:calc(env(safe-area-inset-top) + 22px);left:50%;width:46px;height:42px;transform:translate(-50%,0);}
+#hero-heart.heart--center{top:50%;left:50%;width:150px;height:136px;transform:translate(-50%,-50%);}
+#hero-heart.heart--move{transition:top 2.4s var(--ease-slow),width 2.4s var(--ease-slow),height 2.4s var(--ease-slow),transform 2.4s var(--ease-slow);}
+#mute-toggle{
+  position:fixed;z-index:20;top:calc(env(safe-area-inset-top) + 14px);left:14px;width:38px;height:38px;
+  border-radius:50%;border:1px solid var(--line);background:rgba(255,255,255,.05);backdrop-filter:blur(6px);
+  color:var(--ink-soft);font-size:16px;display:flex;align-items:center;justify-content:center;
+  opacity:0;transition:opacity .8s ease;
+}
+#mute-toggle.show{opacity:1;}
+.scene{
+  position:absolute;inset:0;z-index:2;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:32px 24px;opacity:0;visibility:hidden;pointer-events:none;transition:opacity .6s ease;text-align:center;
+  overflow-y:auto;
+}
+.scene.active{opacity:1;visibility:visible;pointer-events:auto;}
+#scene-blackout{background:#000;z-index:4;}
+#scene-gate .gate-heart{font-size:52px;opacity:.85;animation:gate-pulse 2.6s ease-in-out infinite;filter:drop-shadow(0 0 18px var(--rose-glow));}
+#scene-gate .gate-text{margin-top:22px;font-size:.95rem;color:var(--ink-mute);letter-spacing:.05em;}
+@keyframes gate-pulse{0%,100%{transform:scale(1);opacity:.7;}50%{transform:scale(1.08);opacity:1;}}
+.intro-text{position:absolute;font-family:var(--font-display);font-size:1.9rem;color:var(--ink);opacity:0;
+  text-shadow:0 0 30px rgba(255,93,122,.3);max-width:86%;}
+#intro-text2{font-size:2.4rem;}
+#scene-chapter-title .ct-en{
+  font-family:var(--font-body);font-weight:300;letter-spacing:.35em;text-transform:uppercase;font-size:.85rem;
+  color:var(--rose-soft);opacity:0;transform:translateY(10px);
+  transition:opacity 1.8s var(--ease-slow),transform 1.8s var(--ease-slow);
+}
+#scene-chapter-title .ct-ar{
+  font-family:var(--font-display);font-size:2.6rem;color:var(--ink);margin-top:14px;opacity:0;transform:translateY(10px);
+  transition:opacity 1.8s var(--ease-slow) .3s,transform 1.8s var(--ease-slow) .3s;
+}
+#scene-chapter-title.title-in .ct-en,#scene-chapter-title.title-in .ct-ar{opacity:1;transform:translateY(0);}
+#scene-chapter-title.title-out .ct-en,#scene-chapter-title.title-out .ct-ar{opacity:0;transform:translateY(-10px);transition-delay:0s;}
+.qa-wrap{width:100%;max-width:420px;padding-top:90px;margin:0 auto;}
+#scene-chapter3,#scene-chapter4{padding-top:96px;}
+.qa-question{font-size:1.28rem;line-height:1.7;color:var(--ink);opacity:0;
+  transition:opacity 1.4s var(--ease-slow),transform 1.4s var(--ease-slow);transform:translateY(8px);font-weight:500;}
+.qa-question.show{opacity:1;transform:translateY(0);}
+.qa-options{margin-top:30px;display:flex;flex-direction:column;gap:12px;}
+.option-btn{
+  background:var(--card-bg);border:1px solid var(--line);color:var(--ink);border-radius:16px;padding:14px 20px;
+  font-size:1rem;text-align:center;opacity:0;transform:translateY(10px);
+  transition:opacity .9s var(--ease-slow),transform .9s var(--ease-slow),background .3s,border-color .3s;
+}
+.option-btn.show{opacity:1;transform:translateY(0);}
+.option-btn:active{background:var(--card-bg-hover);}
+.option-btn.chosen{border-color:var(--rose);box-shadow:0 0 24px var(--rose-glow);}
+.option-btn.disabled{pointer-events:none;opacity:.45;}
+.option-btn.wrong-shake{animation:shake .4s;}
+.option-btn.flag-option{padding:12px;display:flex;align-items:center;justify-content:center;}
+.option-btn.flag-option svg{width:88px;height:58px;border-radius:8px;display:block;box-shadow:0 3px 12px rgba(0,0,0,.4);}
+@keyframes shake{0%,100%{transform:translateX(0);}25%{transform:translateX(-6px);}75%{transform:translateX(6px);}}
+.shake{animation:shake .4s;border-color:#ff6b6b !important;}
+.dots{margin-top:28px;display:flex;gap:8px;justify-content:center;height:10px;opacity:0;transition:opacity .4s;}
+.dots.show{opacity:1;}
+.dots span{width:8px;height:8px;border-radius:50%;background:var(--rose-soft);animation:dot-bounce 1.2s ease-in-out infinite;}
+.dots span:nth-child(2){animation-delay:.15s;}
+.dots span:nth-child(3){animation-delay:.3s;}
+@keyframes dot-bounce{0%,80%,100%{transform:scale(.6);opacity:.4;}40%{transform:scale(1);opacity:1;}}
+.qa-reply{margin-top:26px;font-size:1.15rem;color:var(--rose-soft);font-family:var(--font-display);opacity:0;
+  transform:translateY(8px);transition:opacity 1.2s var(--ease-slow),transform 1.2s var(--ease-slow);line-height:1.7;}
+.qa-reply.show{opacity:1;transform:translateY(0);}
+.pct-slider{margin-top:34px;direction:ltr;padding:20px 6px;opacity:0;transform:translateY(10px);
+  transition:opacity 1s var(--ease-slow),transform 1s var(--ease-slow);}
+.pct-slider.show{opacity:1;transform:translateY(0);}
+.pct-track{position:relative;height:6px;border-radius:6px;background:rgba(255,255,255,.12);touch-action:none;}
+.pct-fill{position:absolute;inset-block:0;left:0;border-radius:6px;background:linear-gradient(90deg,var(--wine),var(--rose));width:50%;}
+.pct-thumb{position:absolute;top:50%;width:26px;height:26px;border-radius:50%;
+  background:radial-gradient(circle at 35% 30%,#fff,var(--rose) 60%);box-shadow:0 0 16px var(--rose-glow);
+  transform:translate(-50%,-50%);left:50%;touch-action:none;}
+.pct-bubble{position:absolute;bottom:26px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.55);
+  border:1px solid var(--line);padding:4px 10px;border-radius:10px;font-size:.85rem;white-space:nowrap;}
+.btn-submit{display:block;margin:30px auto 0;background:linear-gradient(135deg,var(--crimson),var(--wine));color:var(--ink);
+  border:none;border-radius:20px;padding:13px 34px;font-size:1rem;font-weight:700;
+  box-shadow:0 6px 24px rgba(156,18,64,.35);opacity:0;transform:translateY(10px);
+  transition:opacity 1s var(--ease-slow),transform 1s var(--ease-slow);}
+.btn-submit.show{opacity:1;transform:translateY(0);}
+.btn-submit:active{transform:scale(.96);}
+.btn-submit.disabled{pointer-events:none;opacity:.4;}
+.btn-ghost{background:transparent;border:1px solid var(--line);color:var(--ink-soft);border-radius:18px;padding:11px 26px;font-size:.9rem;}
+.btn-ghost:active{background:var(--card-bg);}
+.c3-intro{font-family:var(--font-display);font-size:1.4rem;margin-bottom:36px;opacity:0;
+  transition:opacity 1.6s var(--ease-slow);max-width:340px;line-height:1.8;}
+.c3-intro.show{opacity:1;}
+.gift-row{display:flex;gap:18px;justify-content:center;perspective:1000px;flex-wrap:wrap;}
+.gift-box{width:96px;height:96px;opacity:0;transform:translateY(16px) scale(.85);
+  transition:opacity 1s var(--ease-slow),transform 1s var(--ease-slow);}
+.gift-box.show{opacity:1;transform:translateY(0) scale(1);}
+.gift-inner{position:relative;width:100%;height:100%;transition:transform 1s var(--ease-slow);transform-style:preserve-3d;}
+.gift-box.opened .gift-inner{transform:rotateY(180deg);}
+.gift-face{position:absolute;inset:0;border-radius:16px;display:flex;align-items:center;justify-content:center;backface-visibility:hidden;}
+.gift-front{background:linear-gradient(135deg,var(--wine),var(--crimson));border:1px solid rgba(255,255,255,.15);}
+.gift-front::before{content:'';position:absolute;top:0;bottom:0;left:50%;width:12px;margin-left:-6px;background:rgba(255,255,255,.25);}
+.gift-front::after{content:'';position:absolute;left:0;right:0;top:50%;height:12px;margin-top:-6px;background:rgba(255,255,255,.25);}
+.gift-front .ribbon-icon{font-size:26px;z-index:1;}
+.gift-back{background:var(--card-bg);border:1px solid var(--rose);transform:rotateY(180deg);flex-direction:column;gap:4px;box-shadow:0 0 20px var(--rose-glow);}
+.gift-back .g-emoji{font-size:30px;}
+.gift-back .g-label{font-size:.72rem;color:var(--ink-soft);}
+.c3-note{margin-top:34px;font-size:.98rem;color:var(--ink-mute);max-width:320px;line-height:1.8;opacity:0;transition:opacity 1.6s var(--ease-slow);}
+.c3-note.show{opacity:1;}
+.c4-intro{font-family:var(--font-display);font-size:1.3rem;margin-bottom:30px;opacity:0;
+  transition:opacity 1.6s var(--ease-slow);max-width:330px;line-height:1.8;}
+.c4-intro.show{opacity:1;}
+.folder-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;width:100%;max-width:300px;}
+.folder-tile{aspect-ratio:1;border-radius:18px;background:var(--card-bg);border:1px solid var(--line);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;opacity:0;
+  transform:translateY(14px) scale(.9);
+  transition:opacity .9s var(--ease-slow),transform .9s var(--ease-slow),border-color .4s,box-shadow .4s;}
+.folder-tile.show{opacity:1;transform:translateY(0) scale(1);}
+.folder-tile.unlocked{border-color:var(--rose);box-shadow:0 0 22px var(--rose-glow);}
+.folder-tile .f-icon{font-size:26px;}
+.folder-tile .f-label{font-size:.78rem;color:var(--ink-soft);}
+.folder-tile:nth-child(5){grid-column:1 / span 2;max-width:135px;margin:0 auto;}
+#modal-overlay{position:fixed;inset:0;z-index:15;background:rgba(2,1,5,.82);backdrop-filter:blur(4px);
+  display:flex;align-items:center;justify-content:center;opacity:0;visibility:hidden;transition:opacity .4s ease;padding:24px;}
+#modal-overlay.show{opacity:1;visibility:visible;}
+#modal-card{background:var(--bg-1);border:1px solid var(--line);border-radius:24px;padding:30px 22px;max-width:380px;
+  width:100%;max-height:82vh;overflow-y:auto;position:relative;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.5);}
+#modal-close{position:absolute;top:14px;left:14px;background:none;border:none;color:var(--ink-mute);font-size:18px;width:32px;height:32px;}
+.modal-title{font-family:var(--font-display);font-size:1.2rem;color:var(--rose-soft);margin-bottom:16px;}
+.modal-msg{font-size:.9rem;color:var(--ink-mute);min-height:20px;margin-top:14px;}
+.modal-reveal{font-family:var(--font-display);font-size:1.35rem;line-height:2;color:var(--ink);padding:10px 0;}
+.mem-grid{display:flex;gap:8px;justify-content:center;margin:20px 0;flex-wrap:wrap;}
+.mem-card{width:56px;height:56px;border-radius:14px;background:var(--card-bg);border:1px solid var(--line);
+  display:flex;align-items:center;justify-content:center;font-size:24px;transition:transform .25s,box-shadow .25s,border-color .25s;}
+.mem-card.flash{transform:scale(1.14);border-color:var(--rose);box-shadow:0 0 20px var(--rose-glow);}
+.mem-card.correct{border-color:var(--rose);box-shadow:0 0 16px var(--rose-glow);}
+.mem-card.wrong{animation:shake .4s;border-color:#ff5555;}
+.mem-card.disabled{pointer-events:none;opacity:.6;}
+.field-input{width:100%;max-width:220px;margin:18px auto 0;display:block;background:rgba(255,255,255,.06);
+  border:1px solid var(--line);border-radius:14px;padding:13px 16px;font-size:1.15rem;color:var(--ink);text-align:center;}
+.field-input.ltr{direction:ltr;}
+.field-input:focus{outline:none;border-color:var(--rose);}
+.math-eq{font-size:1.15rem;letter-spacing:.02em;direction:ltr;}
+.hint-text{margin-top:14px;font-size:.8rem;color:var(--ink-mute);min-height:14px;}
+.quiz-options{display:flex;flex-direction:column;gap:10px;margin-top:18px;}
+.match-cols{display:flex;gap:20px;justify-content:center;margin-top:18px;}
+.match-col{display:flex;flex-direction:column;gap:10px;}
+.match-item{background:var(--card-bg);border:1px solid var(--line);border-radius:12px;padding:10px 14px;font-size:.85rem;min-width:100px;}
+.match-item.selected{border-color:var(--rose);box-shadow:0 0 14px var(--rose-glow);}
+.match-item.matched{opacity:.4;border-color:var(--rose);pointer-events:none;}
+.match-item.wrong{animation:shake .4s;}
+.c5-text{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-family:var(--font-display);font-size:2rem;opacity:0;max-width:86%;color:var(--ink);
+  text-shadow:0 0 30px rgba(255,178,197,.4);transition:color 2.5s ease,text-shadow 2.5s ease;}
+.c5-final{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);opacity:0;transition:opacity 2.2s ease;display:flex;flex-direction:column;align-items:center;gap:10px;width:86%;}
+.c5-final.show{opacity:1;}
+.c5-final .f-main{font-family:var(--font-display);font-size:2.1rem;color:var(--ink);opacity:0;transform:translateY(8px);transition:opacity 1.4s ease,transform 1.4s ease,color 2.5s ease;}
+.c5-final .f-sub{font-size:1rem;color:var(--rose-soft);opacity:0;transform:translateY(8px);transition:opacity 1.4s ease .6s,transform 1.4s ease .6s,color 2.5s ease;}
+.c5-final.show .f-main,.c5-final.show .f-sub{opacity:1;transform:translateY(0);}
+body.love{--rose:#ffb3c6;--rose-soft:#fff0f3;--ink:#fff6f8;}
+.c5-buttons{position:absolute;bottom:60px;left:0;right:0;display:flex;flex-direction:column;gap:12px;
+  align-items:center;opacity:0;transition:opacity 1.4s var(--ease-slow);padding:0 30px;}
+.c5-buttons.show{opacity:1;}
+.c5-buttons .btn-submit,.c5-buttons .btn-ghost{width:100%;max-width:260px;opacity:1;transform:none;}
+#scene-closing{background:#000;}
+#scene-closing .close-heart{font-size:34px;opacity:.5;}
+.sparkle{position:absolute;border-radius:50%;background:#fff;pointer-events:none;}
+@media (max-width:360px){
+  .qa-question{font-size:1.12rem;}
+  #scene-chapter-title .ct-ar{font-size:2.1rem;}
+}
+:focus-visible{outline:2px solid var(--rose);outline-offset:2px;}
+@media (prefers-reduced-motion:reduce){
+  .star{animation:none !important;}
+  #scene-gate .gate-heart{animation:none !important;}
+}
+</style>
+</head>
+<body>
+<div id="app-root">
+  <div id="stars-layer"></div>
+  <div id="bg-love"></div>
+  <div id="grain"></div>
+  <div id="particle-layer"></div>
+  <div id="explosion-flash"></div>
+
+  <div id="hero-heart" class="heart--hero">
+    <div class="heart-scaler">
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="heartGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#ff5d7a"/>
+            <stop offset="1" stop-color="#4a0f28"/>
+          </linearGradient>
+        </defs>
+        <path fill="url(#heartGrad)" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+      </svg>
+    </div>
+  </div>
+
+  <button id="mute-toggle" aria-label="كتم الصوت">🔊</button>
+
+  <section class="scene active" id="scene-gate">
+    <div class="gate-heart">🖤</div>
+    <div class="gate-text">المسي القلب لتبدأ</div>
+  </section>
+
+  <section class="scene" id="scene-intro">
+    <div class="intro-text" id="intro-text1">Made Only For You!</div>
+    <div class="intro-text" id="intro-text2">Lojain...</div>
+  </section>
+
+  <section class="scene" id="scene-blackout"></section>
+
+  <section class="scene" id="scene-chapter-title">
+    <div class="ct-en" id="chapter-title-en"></div>
+    <div class="ct-ar" id="chapter-title-ar"></div>
+  </section>
+
+  <section class="scene" id="scene-chapter1">
+    <div class="qa-wrap">
+      <div class="qa-question" id="c1-question"></div>
+      <div class="qa-options" id="c1-options"></div>
+      <div class="dots" id="c1-dots"><span></span><span></span><span></span></div>
+      <div class="qa-reply" id="c1-reply"></div>
+    </div>
+  </section>
+
+  <section class="scene" id="scene-chapter2">
+    <div class="qa-wrap">
+      <div class="qa-question" id="c2-question"></div>
+      <div id="c2-slider-slot"></div>
+      <div class="dots" id="c2-dots"><span></span><span></span><span></span></div>
+      <div class="qa-reply" id="c2-reply"></div>
+    </div>
+  </section>
+
+  <section class="scene" id="scene-countries">
+    <div class="qa-wrap">
+      <div class="qa-question" id="co-question"></div>
+      <div class="qa-options" id="co-options"></div>
+      <div class="dots" id="co-dots"><span></span><span></span><span></span></div>
+      <div class="qa-reply" id="co-reply"></div>
+    </div>
+  </section>
+
+  <section class="scene" id="scene-chapter3">
+    <div class="c3-intro" id="c3-intro"></div>
+    <div class="gift-row" id="c3-boxes"></div>
+    <div class="c3-note" id="c3-note"></div>
+    <button class="btn-ghost" id="c3-continue" style="opacity:0;transition:opacity 1s ease;margin-top:26px;">إلى الفصل التالي</button>
+  </section>
+
+  <section class="scene" id="scene-chapter4">
+    <div class="c4-intro" id="c4-intro"></div>
+    <div class="folder-grid" id="c4-grid"></div>
+    <button class="btn-ghost" id="c4-continue" style="opacity:0;transition:opacity 1s ease;margin-top:26px;">متابعة إلى الفصل الأخير</button>
+  </section>
+
+  <section class="scene" id="scene-chapter5">
+    <div class="c5-text" id="c5-text1">إلى أجمل صدفة في حياتي</div>
+    <div class="c5-text" id="c5-text2">لجين</div>
+    <div class="c5-final" id="c5-final">
+      <div class="f-main">كل سنة وانتي طيبة 🤍</div>
+      <div class="f-sub">السنة الجاية في A-2 🤍</div>
+    </div>
+    <div class="c5-buttons" id="c5-buttons">
+      <button class="btn-submit show" id="btn-close-app">إغلاق التطبيق 🖤</button>
+      <button class="btn-ghost" id="btn-back-folder5">الرجوع للملف الخامس 🔐</button>
+      <button class="btn-ghost" id="btn-restart">نبدأ من جديد 🔁</button>
+    </div>
+  </section>
+
+  <section class="scene" id="scene-closing">
+    <div class="close-heart">🖤</div>
+  </section>
+
+  <div id="modal-overlay">
+    <div id="modal-card">
+      <button id="modal-close" aria-label="إغلاق">✕</button>
+      <div id="modal-body"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+'use strict';
+
+/* ---------- basic helpers ---------- */
+function $(id){ return document.getElementById(id); }
+function wait(ms){ return new Promise(function(res){ setTimeout(res, ms); }); }
+function shuffle(arr){
+  var a = arr.slice();
+  for(var i=a.length-1;i>0;i--){
+    var j = Math.floor(Math.random()*(i+1));
+    var tmp=a[i]; a[i]=a[j]; a[j]=tmp;
+  }
+  return a;
+}
+/* fires fn on the frame AFTER the next one, so a freshly-set base style
+   (e.g. opacity:0 on a just-created element) is guaranteed to be painted
+   before we flip the class/style that should transition - otherwise some
+   browsers coalesce the two changes and skip the transition entirely. */
+function nextFrame(fn){
+  var raf = window.requestAnimationFrame;
+  raf(function(){ raf(fn); });
+}
+
+/* ---------- audio engine (synthesized, no external files) ---------- */
+var audioEngine = {
+  ctx:null, masterGain:null, muted:false, heartbeatTimer:null,
+  init:function(){
+    if(this.ctx) return;
+    try{
+      this.ctx = new (window.AudioContext||window.webkitAudioContext)();
+      this.masterGain = this.ctx.createGain();
+      this.masterGain.gain.value = 0.8;
+      this.masterGain.connect(this.ctx.destination);
+    }catch(e){ this.ctx = null; }
+  },
+  resume:function(){ if(this.ctx && this.ctx.state==='suspended'){ this.ctx.resume(); } },
+  setMuted:function(m){ this.muted=m; if(this.masterGain){ this.masterGain.gain.value = m?0:0.8; } },
+  _thud:function(startTime, freq, vol){
+    if(!this.ctx) return;
+    var osc=this.ctx.createOscillator(), gain=this.ctx.createGain();
+    osc.type='sine';
+    osc.frequency.setValueAtTime(freq,startTime);
+    osc.frequency.exponentialRampToValueAtTime(Math.max(freq*0.55,20), startTime+0.16);
+    gain.gain.setValueAtTime(0.0001,startTime);
+    gain.gain.linearRampToValueAtTime(vol,startTime+0.018);
+    gain.gain.exponentialRampToValueAtTime(0.0001,startTime+0.3);
+    osc.connect(gain); gain.connect(this.masterGain);
+    osc.start(startTime); osc.stop(startTime+0.32);
+  },
+  playHeartbeatPulse:function(volMult){
+    if(!this.ctx) return;
+    volMult = volMult===undefined?1:volMult;
+    var t=this.ctx.currentTime;
+    this._thud(t,58,0.55*volMult);
+    this._thud(t+0.16,44,0.38*volMult);
+  },
+  playClick:function(){
+    if(!this.ctx) return;
+    var t=this.ctx.currentTime;
+    var osc=this.ctx.createOscillator(), gain=this.ctx.createGain();
+    osc.type='square'; osc.frequency.setValueAtTime(1400,t);
+    osc.frequency.exponentialRampToValueAtTime(600,t+.05);
+    gain.gain.setValueAtTime(0.25,t);
+    gain.gain.exponentialRampToValueAtTime(0.0001,t+.06);
+    osc.connect(gain); gain.connect(this.masterGain);
+    osc.start(t); osc.stop(t+.07);
+  },
+  playPageFlip:function(){
+    if(!this.ctx) return;
+    var dur=0.4;
+    var bufferSize=Math.floor(this.ctx.sampleRate*dur);
+    var buffer=this.ctx.createBuffer(1,bufferSize,this.ctx.sampleRate);
+    var data=buffer.getChannelData(0);
+    for(var i=0;i<bufferSize;i++){ data[i]=(Math.random()*2-1)*Math.pow(1-i/bufferSize,1.6); }
+    var noise=this.ctx.createBufferSource(); noise.buffer=buffer;
+    var filter=this.ctx.createBiquadFilter();
+    filter.type='bandpass';
+    filter.frequency.setValueAtTime(2200,this.ctx.currentTime);
+    filter.frequency.exponentialRampToValueAtTime(500,this.ctx.currentTime+dur);
+    filter.Q.value=0.6;
+    var gain=this.ctx.createGain();
+    gain.gain.setValueAtTime(0.45,this.ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.0001,this.ctx.currentTime+dur);
+    noise.connect(filter); filter.connect(gain); gain.connect(this.masterGain);
+    noise.start();
+  },
+  playChime:function(success){
+    if(!this.ctx) return;
+    var t=this.ctx.currentTime;
+    var freqs = success!==false ? [523.25,659.25,783.99] : [300,255];
+    var self=this;
+    freqs.forEach(function(f,i){
+      var osc=self.ctx.createOscillator(), gain=self.ctx.createGain();
+      osc.type='sine'; osc.frequency.setValueAtTime(f,t+i*0.09);
+      gain.gain.setValueAtTime(0.0001,t+i*0.09);
+      gain.gain.linearRampToValueAtTime(0.22,t+i*0.09+0.02);
+      gain.gain.exponentialRampToValueAtTime(0.0001,t+i*0.09+0.5);
+      osc.connect(gain); gain.connect(self.masterGain);
+      osc.start(t+i*0.09); osc.stop(t+i*0.09+0.52);
+    });
+  },
+  playSwell:function(){
+    if(!this.ctx) return;
+    var t=this.ctx.currentTime; var self=this;
+    [392,494,587,784].forEach(function(f,i){
+      var osc=self.ctx.createOscillator(), gain=self.ctx.createGain();
+      osc.type='sine'; osc.frequency.setValueAtTime(f,t);
+      gain.gain.setValueAtTime(0.0001,t);
+      gain.gain.linearRampToValueAtTime(0.08,t+0.5+i*0.08);
+      gain.gain.exponentialRampToValueAtTime(0.0001,t+2.4);
+      osc.connect(gain); gain.connect(self.masterGain);
+      osc.start(t); osc.stop(t+2.5);
+    });
+  },
+  playTap:function(){
+    if(!this.ctx) return;
+    var t=this.ctx.currentTime;
+    var osc=this.ctx.createOscillator(), gain=this.ctx.createGain();
+    osc.type='sine'; osc.frequency.setValueAtTime(700,t);
+    gain.gain.setValueAtTime(0.12,t);
+    gain.gain.exponentialRampToValueAtTime(0.0001,t+.08);
+    osc.connect(gain); gain.connect(this.masterGain);
+    osc.start(t); osc.stop(t+.09);
+  },
+  startHeartbeatLoop:function(cycleMs, volMult){
+    this.stopHeartbeatLoop();
+    var self=this;
+    var beat=function(){ self.playHeartbeatPulse(volMult); };
+    beat();
+    this.heartbeatTimer=setInterval(beat, cycleMs);
+  },
+  stopHeartbeatLoop:function(){
+    if(this.heartbeatTimer){ clearInterval(this.heartbeatTimer); this.heartbeatTimer=null; }
+  }
+};
+
+/* ---------- stars ---------- */
+var starsLayer = $('stars-layer');
+var starsBuilt = false;
+function buildStars(){
+  if(starsBuilt) return;
+  starsBuilt = true;
+  var count = window.innerWidth<400 ? 70 : 100;
+  for(var i=0;i<count;i++){
+    var s=document.createElement('div');
+    s.className='star';
+    var size=(Math.random()*2+0.6).toFixed(1);
+    s.style.width=size+'px'; s.style.height=size+'px';
+    s.style.top=(Math.random()*100)+'%';
+    s.style.left=(Math.random()*100)+'%';
+    var dur=(2.4+Math.random()*3).toFixed(2);
+    var delay=(Math.random()*4).toFixed(2);
+    s.style.animation='twinkle '+dur+'s ease-in-out '+delay+'s infinite';
+    starsLayer.appendChild(s);
+  }
+}
+function showStars(on){
+  buildStars();
+  starsLayer.classList.toggle('show', !!on);
+}
+
+/* ---------- scene manager ---------- */
+function showScene(id){
+  var el=$(id);
+  var all=document.querySelectorAll('.scene');
+  for(var i=0;i<all.length;i++){ if(all[i]!==el) all[i].classList.remove('active'); }
+  nextFrame(function(){ el.classList.add('active'); el.scrollTop=0; });
+}
+
+/* ---------- hero heart controller ---------- */
+var heroHeart = $('hero-heart');
+function hideHeroHeart(ms){
+  ms = ms===undefined?450:ms;
+  stopHeartbeat();
+  heroHeart.style.transition='opacity '+ms+'ms ease';
+  heroHeart.style.opacity='0';
+  return wait(ms);
+}
+function placeHeroHeart(posClass){
+  heroHeart.classList.remove('heart--hero','heart--pinned','heart--center','heart--move');
+  heroHeart.classList.add(posClass);
+  heroHeart.style.filter='';
+}
+function showHeroHeart(ms){
+  ms = ms===undefined?1400:ms;
+  heroHeart.style.transition='opacity '+ms+'ms ease';
+  nextFrame(function(){ heroHeart.style.opacity='1'; });
+  return wait(ms);
+}
+function pulseHeroHeart(){
+  var scaler = heroHeart.querySelector('.heart-scaler');
+  if(!scaler || !scaler.animate) return;
+  scaler.animate([
+    {transform:'scale(1)'},
+    {transform:'scale(1.16)'},
+    {transform:'scale(.95)'},
+    {transform:'scale(1.05)'},
+    {transform:'scale(1)'}
+  ], {duration:440, easing:'ease-in-out'});
+}
+
+/* ---------- generic text reveal ---------- */
+function showText(el, opts){
+  opts = opts || {};
+  var holdMs = opts.holdMs===undefined?2500:opts.holdMs;
+  var fadeInMs = opts.fadeInMs===undefined?1800:opts.fadeInMs;
+  var fadeOutMs = opts.fadeOutMs===undefined?1800:opts.fadeOutMs;
+  return (async function(){
+    el.style.transition='opacity '+fadeInMs+'ms ease';
+    nextFrame(function(){ el.style.opacity='1'; });
+    await wait(fadeInMs+holdMs);
+    el.style.transition='opacity '+fadeOutMs+'ms ease';
+    el.style.opacity='0';
+    await wait(fadeOutMs);
+  })();
+}
+
+/* ---------- dots + reply pattern (shared across chapters) ---------- */
+async function dotsThenReply(dotsEl, replyEl, replyText, dotsMs){
+  dotsMs = dotsMs===undefined?2000:dotsMs;
+  dotsEl.classList.add('show');
+  await wait(dotsMs);
+  dotsEl.classList.remove('show');
+  await wait(200);
+  replyEl.textContent = replyText;
+  replyEl.classList.add('show');
+  await wait(2600);
+}
+function resetQA(question, options, dots, reply){
+  question.classList.remove('show'); question.textContent='';
+  options.innerHTML='';
+  dots.classList.remove('show');
+  reply.classList.remove('show'); reply.textContent='';
+}
+
+/* ---------- chapter title helpers ---------- */
+function setChapterTitle(en, ar){
+  $('chapter-title-en').textContent = en;
+  $('chapter-title-ar').textContent = ar;
+}
+
+/* ---------- chapter title card: pageflip -> hold 5s -> pageflip ---------- */
+async function showTitleCard(enTitle, arTitle){
+  audioEngine.playPageFlip();
+  showScene('scene-chapter-title');
+  setChapterTitle(enTitle, arTitle);
+  var titleScene = $('scene-chapter-title');
+  titleScene.classList.remove('title-out');
+  nextFrame(function(){ titleScene.classList.add('title-in'); });
+  await wait(5000);
+  audioEngine.playPageFlip();
+  titleScene.classList.remove('title-in');
+  titleScene.classList.add('title-out');
+  await wait(900);
+  titleScene.classList.remove('title-out');
+}
+
+/* ---------- master chapter transition: click -> black -> stars -> title card -> content ---------- */
+async function transitionToChapter(enTitle, arTitle, holdMs, contentFn){
+  audioEngine.playClick();
+  await hideHeroHeart(400);
+  showStars(false);
+  showScene('scene-blackout');
+  await wait(holdMs);
+  showStars(true);
+  await wait(1500);
+  await showTitleCard(enTitle, arTitle);
+  await contentFn();
+}
+
+/* ---------- staggered option rendering + choice waiting ---------- */
+async function renderOptionsStaggered(container, labels, staggerMs, isFlag){
+  staggerMs = staggerMs===undefined?2000:staggerMs;
+  var btns=[];
+  for(var i=0;i<labels.length;i++){
+    var b=document.createElement('button');
+    b.className='option-btn'+(isFlag?' flag-option':'');
+    b.type='button';
+    if(isFlag){ b.innerHTML = FLAG_SVGS[labels[i]] || ''; }
+    else { b.textContent = labels[i]; }
+    container.appendChild(b);
+    (function(btn){ nextFrame(function(){ btn.classList.add('show'); }); })(b);
+    btns.push(b);
+    if(i<labels.length-1) await wait(staggerMs);
+  }
+  return btns;
+}
+function waitForChoice(btns){
+  return new Promise(function(resolve){
+    function makeHandler(b, idx){
+      return function(){
+        for(var k=0;k<btns.length;k++){ btns[k].removeEventListener('click', btns[k]._h); }
+        audioEngine.playTap();
+        for(var j=0;j<btns.length;j++){
+          if(btns[j]!==b){ btns[j].classList.add('disabled'); }
+          else { btns[j].classList.add('chosen','disabled'); }
+        }
+        resolve(idx);
+      };
+    }
+    for(var i=0;i<btns.length;i++){
+      btns[i]._h = makeHandler(btns[i], i);
+      btns[i].addEventListener('click', btns[i]._h);
+    }
+  });
+}
+
+/* ---------- custom touch-friendly slider ---------- */
+function createSlider(container, opts){
+  var min=opts.min, max=opts.max, step=opts.step||1, format=opts.format;
+  var value = opts.initial!==undefined ? opts.initial : Math.round((min+max)/2);
+  container.innerHTML =
+    '<div class="pct-slider"><div class="pct-track"><div class="pct-fill"></div>'+
+    '<div class="pct-thumb"><div class="pct-bubble"></div></div></div></div>'+
+    '<button class="btn-submit" type="button">تأكيد</button>';
+  var sliderWrap = container.querySelector('.pct-slider');
+  var track = container.querySelector('.pct-track');
+  var fill = container.querySelector('.pct-fill');
+  var thumb = container.querySelector('.pct-thumb');
+  var bubble = container.querySelector('.pct-bubble');
+  var submitBtn = container.querySelector('.btn-submit');
+  function render(){
+    var pct=(value-min)/(max-min)*100;
+    fill.style.width=pct+'%';
+    thumb.style.left=pct+'%';
+    bubble.textContent = format ? format(value) : String(value);
+  }
+  function setFromClientX(cx){
+    var rect=track.getBoundingClientRect();
+    var pct=(cx-rect.left)/rect.width;
+    pct=Math.min(1,Math.max(0,pct));
+    var raw=min+pct*(max-min);
+    value=Math.round(raw/step)*step;
+    render();
+  }
+  track.addEventListener('pointerdown', function(e){
+    e.preventDefault();
+    try{ track.setPointerCapture(e.pointerId); }catch(err){}
+    setFromClientX(e.clientX);
+    function move(ev){ setFromClientX(ev.clientX); }
+    function up(){ track.removeEventListener('pointermove',move); track.removeEventListener('pointerup',up); }
+    track.addEventListener('pointermove', move);
+    track.addEventListener('pointerup', up);
+  });
+  render();
+  nextFrame(function(){ sliderWrap.classList.add('show'); submitBtn.classList.add('show'); });
+  return {
+    getValue:function(){ return value; },
+    onSubmit:function(cb){
+      submitBtn.addEventListener('click', function(){
+        submitBtn.classList.add('disabled');
+        track.style.pointerEvents='none';
+        audioEngine.playTap();
+        cb(value);
+      });
+    }
+  };
+}
+
+/* ---------- modal ---------- */
+var modalOverlay = $('modal-overlay');
+var modalBody = $('modal-body');
+function openModal(){ modalOverlay.classList.add('show'); }
+function closeModal(){ modalOverlay.classList.remove('show'); setTimeout(function(){ modalBody.innerHTML=''; },400); }
+$('modal-close').addEventListener('click', closeModal);
+
+/* ---------- unified heartbeat: audio pulse + visual pulse, perfectly synced ---------- */
+var heartbeatTimer = null;
+function startHeartbeat(cycleMs, volMult){
+  stopHeartbeat();
+  var beat = function(){ audioEngine.playHeartbeatPulse(volMult); pulseHeroHeart(); };
+  beat();
+  heartbeatTimer = setInterval(beat, cycleMs);
+}
+function stopHeartbeat(){
+  if(heartbeatTimer){ clearInterval(heartbeatTimer); heartbeatTimer=null; }
+}
+
+/* =========================================================
+   INTRO
+   ========================================================= */
+async function runIntro(){
+  showScene('scene-intro');
+  await wait(5000);                    /* dark, empty hold */
+  showStars(true);                     /* stars fade in for texture */
+  await wait(5000);
+  placeHeroHeart('heart--hero');
+  await showHeroHeart(2600);           /* heart slowly appears */
+  startHeartbeat(1200, 1);             /* slow beat + sound begins */
+  await wait(3200);
+  heroHeart.style.transition = 'filter 2s ease, opacity 2s ease';
+  heroHeart.style.filter = 'blur(9px)';
+  heroHeart.style.opacity = '0.55';    /* heart gets blurred */
+  await wait(1600);
+  await showText($('intro-text1'), {holdMs:3000, fadeInMs:1600, fadeOutMs:1600});
+  await showText($('intro-text2'), {holdMs:5000, fadeInMs:1800, fadeOutMs:3200});
+
+  /* click -> instantly pitch black + silence for 5s */
+  audioEngine.playClick();
+  stopHeartbeat();
+  heroHeart.style.transition = 'opacity .05s linear';
+  heroHeart.style.opacity = '0';
+  showStars(false);
+  showScene('scene-blackout');
+  await wait(5000);
+
+  showStars(true);
+  await wait(1400);
+  await showTitleCard('Chapter One', 'الصدفة');
+  await runChapter1();
+}
+
+/* =========================================================
+   CHAPTER 1 — الصدفة
+   ========================================================= */
+var chapter1Questions = [
+  {
+    q: 'كيف بتحسي اننا اتلمينا؟',
+    options: ['قدر', 'تخطيط', 'منقا بالشطة'],
+    handle: async function(idx, ctx){
+      if(idx===0){ await dotsThenReply(ctx.dots, ctx.reply, 'وما احلى القدر!', 2000); }
+      else if(idx===1){ await dotsThenReply(ctx.dots, ctx.reply, 'مثير للأهتمام...', 3000); }
+      else { await dotsThenReply(ctx.dots, ctx.reply, 'الاتنين جعانين؟ شتت', 2000); }
+    }
+  },
+  {
+    q: 'لو رجعنا لأول يوم، هل كنتِ حتتكلمي معاي؟',
+    options: ['اي, عشان مدشدشني', 'لا, عشان كنت حتدشدشني', 'يمكن, المهم مدشدشني'],
+    handle: async function(idx, ctx){
+      await dotsThenReply(ctx.dots, ctx.reply, 'اعيش وادشدشك هه', 1400);
+    }
+  },
+  {
+    q: 'اول ما بدينا كلام, كنا بنتكلم كم ساعة في اليوم؟',
+    options: ['6 - 8', '8 - 10', '12+'],
+    handle: async function(idx, ctx){
+      if(idx===0 || idx===1){
+        await dotsThenReply(ctx.dots, ctx.reply, 'غلط بس عشان اخترتيها خليها صح', 2000);
+        return;
+      }
+      /* option 3 (12+) pivots straight into a follow-up question */
+      ctx.question.classList.remove('show');
+      ctx.options.innerHTML = '';
+      await wait(700);
+      ctx.question.textContent = 'هل ندمانة علي الوقت داك؟ او حاساهو ضاع؟';
+      nextFrame(function(){ ctx.question.classList.add('show'); });
+      await wait(900);
+      var subBtns = await renderOptionsStaggered(ctx.options, ['اجل', 'لا'], 2000);
+      var subIdx = await waitForChoice(subBtns);
+      if(subIdx===0){ await dotsThenReply(ctx.dots, ctx.reply, 'رسلي لي السبب في الواتس...', 2000); }
+      else { await dotsThenReply(ctx.dots, ctx.reply, '❤️', 1400); }
+    }
+  },
+  {
+    q: 'هل بتحسي انك شخص افضل من السنة الفاتت؟',
+    options: ['اي', 'لأ', 'شدخلك'],
+    handle: async function(idx, ctx){
+      if(idx===0){ await dotsThenReply(ctx.dots, ctx.reply, 'كلنا شايفين كدا', 2000); }
+      else if(idx===1){ await dotsThenReply(ctx.dots, ctx.reply, 'حنشتغل على النقطة دي...', 2000); }
+      else { await dotsThenReply(ctx.dots, ctx.reply, 'معلش', 1400); }
+    }
+  },
+  {
+    q: 'كيف شعورك وانتي خلاص دخلتي العشرينات وودعتي زهرة الشباب؟',
+    options: ['شعور زابط', 'يعني انا عجوزة؟', 'محمد اقعد ساي'],
+    handle: async function(idx, ctx){
+      if(idx===0){ await dotsThenReply(ctx.dots, ctx.reply, 'المفاصل ما قالت كدا لاكين', 2000); }
+      else if(idx===1){ await dotsThenReply(ctx.dots, ctx.reply, 'اااااااي حبوبة لجين عديل', 2000); }
+      else { await dotsThenReply(ctx.dots, ctx.reply, 'حاضر حبي', 1400); }
+    }
+  }
+];
+
+async function askQuestionC1(qData, ctx){
+  resetQA(ctx.question, ctx.options, ctx.dots, ctx.reply);
+  ctx.question.textContent = qData.q;
+  nextFrame(function(){ ctx.question.classList.add('show'); });
+  await wait(900);
+  var btns = await renderOptionsStaggered(ctx.options, qData.options, 2000);
+  var idx = await waitForChoice(btns);
+  await qData.handle(idx, ctx);
+  audioEngine.playPageFlip();
+  ctx.question.classList.remove('show');
+  ctx.reply.classList.remove('show');
+  await wait(700);
+}
+
+async function runChapter1(){
+  showScene('scene-chapter1');
+  placeHeroHeart('heart--pinned');
+  await showHeroHeart(1400);
+  startHeartbeat(1200, 0.4);
+  var ctx = { question:$('c1-question'), options:$('c1-options'), dots:$('c1-dots'), reply:$('c1-reply') };
+  for(var i=0;i<chapter1Questions.length;i++){
+    await askQuestionC1(chapter1Questions[i], ctx);
+  }
+  await transitionToChapter('Chapter 2', 'النسبة', 3000, runChapter2);
+}
+
+/* =========================================================
+   CHAPTER 2 — النسبة
+   ========================================================= */
+var chapter2Questions = [
+  {
+    q: 'نسبة التفاهم بيناتنا',
+    min: 0, max: 100, format: function(v){ return v + '%'; },
+    handle: async function(val, ctx){
+      if(val>=80){ await dotsThenReply(ctx.dots, ctx.reply, 'اتفق وبشدة', 2200); }
+      else { await dotsThenReply(ctx.dots, ctx.reply, 'مع الزمن حنتفاهم اكتر واكتر', 2200); }
+    }
+  },
+  {
+    q: 'نسبة الثقة بيناتنا',
+    min: 0, max: 100, format: function(v){ return v + '%'; },
+    handle: async function(val, ctx){
+      if(val<=50){ await dotsThenReply(ctx.dots, ctx.reply, 'لو خليتك تفقدي الثقة بسبب موقف كلميني...', 2200); }
+      else if(val<=80){ await dotsThenReply(ctx.dots, ctx.reply, 'محتاجين نعالج الحته دي', 2200); }
+      else { await dotsThenReply(ctx.dots, ctx.reply, 'اللهم زد وبارك', 2200); }
+    }
+  },
+  {
+    q: 'نسبة المراعاة',
+    min: 0, max: 100, format: function(v){ return v + '%'; },
+    handle: async function(val, ctx){
+      if(val<70){ await dotsThenReply(ctx.dots, ctx.reply, 'هممم.... يتم التسجيل', 2200); }
+      else { await dotsThenReply(ctx.dots, ctx.reply, 'حصل حصل', 2200); }
+    }
+  },
+  {
+    q: 'نسبة السخانة عندكم هسي',
+    min: -50, max: 50, initial: 0, format: function(v){ return (v>0?'+':'') + v + '°'; },
+    handle: async function(val, ctx){
+      if(val<20){ await dotsThenReply(ctx.dots, ctx.reply, 'خلي الكدب انتو قاعدين في فرن', 2200); }
+      else { await dotsThenReply(ctx.dots, ctx.reply, 'تششششششش', 2200); }
+    }
+  },
+  {
+    q: 'مستوى الخارجيات',
+    min: 0, max: 1000, format: function(v){ return String(v); },
+    handle: async function(val, ctx){
+      if(val>=1000){ await dotsThenReply(ctx.dots, ctx.reply, 'تيت تيت', 2200); }
+      else { await dotsThenReply(ctx.dots, ctx.reply, 'حتكذبي علي روحك؟ الاجابة الصحيحة 1000', 2200); }
+    }
+  }
+];
+
+async function askQuestionC2(qData, ctx){
+  ctx.question.classList.remove('show'); ctx.question.textContent='';
+  ctx.sliderSlot.innerHTML='';
+  ctx.dots.classList.remove('show');
+  ctx.reply.classList.remove('show'); ctx.reply.textContent='';
+  ctx.question.textContent = qData.q;
+  nextFrame(function(){ ctx.question.classList.add('show'); });
+  await wait(900);
+  var slider = createSlider(ctx.sliderSlot, qData);
+  var val = await new Promise(function(resolve){ slider.onSubmit(resolve); });
+  await qData.handle(val, ctx);
+  audioEngine.playPageFlip();
+  ctx.question.classList.remove('show');
+  ctx.reply.classList.remove('show');
+  await wait(700);
+}
+
+async function runChapter2(){
+  showScene('scene-chapter2');
+  placeHeroHeart('heart--pinned');
+  await showHeroHeart(1000);
+  startHeartbeat(1200, 0.4);
+  var ctx = { question:$('c2-question'), sliderSlot:$('c2-slider-slot'), dots:$('c2-dots'), reply:$('c2-reply') };
+  for(var i=0;i<chapter2Questions.length;i++){
+    await askQuestionC2(chapter2Questions[i], ctx);
+  }
+  await transitionToChapter('Chapter 3', 'البلدان', 3000, runChapterCountries);
+}
+
+/* =========================================================
+   CHAPTER 3 — البلدان  (same style/animation pattern as Chapter 1)
+   ========================================================= */
+
+/* hand-drawn flags (SVG, not emoji) so they render identically on every
+   device/OS - flag emoji rely on the system font and some platforms
+   (notably Windows) show the raw two-letter country code instead of a flag. */
+var FLAG_SVGS = {
+  poland:    '<svg viewBox="0 0 30 20" xmlns="http://www.w3.org/2000/svg"><rect width="30" height="10" fill="#fff"/><rect y="10" width="30" height="10" fill="#dc143c"/></svg>',
+  indonesia: '<svg viewBox="0 0 30 20" xmlns="http://www.w3.org/2000/svg"><rect width="30" height="10" fill="#ce1126"/><rect y="10" width="30" height="10" fill="#fff"/></svg>',
+  monaco:    '<svg viewBox="0 0 30 20" xmlns="http://www.w3.org/2000/svg"><rect width="30" height="10" fill="#ed2939"/><rect y="10" width="30" height="10" fill="#fff"/></svg>',
+  denmark:   '<svg viewBox="0 0 30 20" xmlns="http://www.w3.org/2000/svg"><rect width="30" height="20" fill="#c8102e"/><rect x="10" width="4" height="20" fill="#fff"/><rect y="8" width="30" height="4" fill="#fff"/></svg>',
+  sweden:    '<svg viewBox="0 0 30 20" xmlns="http://www.w3.org/2000/svg"><rect width="30" height="20" fill="#006aa7"/><rect x="10" width="4" height="20" fill="#fecc00"/><rect y="8" width="30" height="4" fill="#fecc00"/></svg>',
+  norway:    '<svg viewBox="0 0 30 20" xmlns="http://www.w3.org/2000/svg"><rect width="30" height="20" fill="#ba0c2f"/><rect x="9" width="6" height="20" fill="#fff"/><rect y="7" width="30" height="6" fill="#fff"/><rect x="10.5" width="3" height="20" fill="#00205b"/><rect y="8.5" width="30" height="3" fill="#00205b"/></svg>'
+};
+
+var countryQuestions = [
+  {
+    kind: 'flag',
+    q: 'اي واحد من ديل هو علم بولندا؟',
+    flags: ['poland', 'indonesia', 'monaco'],   /* flags[0] is always correct - shuffled at render time */
+    wrongMsgs: ['ذاكرة تعبانة كيف', 'لجين خلي الحركات', 'هئم'],  /* escalates, last one repeats */
+    correctMsg: 'صح عليك'
+  },
+  {
+    kind: 'choice',
+    q: 'العملة المستخدمة في بولندا, اسمها شنو؟',
+    options: ['دولار', 'زلوتي', 'يورو'],
+    correctIndex: 1,
+    replies: ['دولارات في جيبك', 'صح, زلوووتي', 'يورو في جيبك']
+  },
+  {
+    kind: 'choice',
+    q: 'ما هي الدولة التي شمال بولندا؟',
+    options: ['المانيا', 'روسيا', 'بحر البلطيق'],
+    correctIndex: 0,
+    replies: ['صح عليييك', 'هئم', 'نحنا قلنا دولة يا حبي']
+  },
+  {
+    kind: 'flag',
+    q: 'اي واحد من ديل هو علم الدنمارك؟',
+    flags: ['denmark', 'sweden', 'norway'],
+    wrongMsgs: ['هئم'],
+    correctMsg: 'صح'
+  },
+  {
+    kind: 'choice',
+    q: 'ما هي العملة المستخدمة في الدنمارك؟',
+    options: ['زلوتي', 'كرونة', 'يورو'],
+    correctIndex: 1,
+    replies: ['هئم, ركزي', 'صح عليييك', 'هئم, ركزي']
+  },
+  {
+    kind: 'choice',
+    q: 'بحر البلطيق موجود يمين الدنمارك.',
+    options: ['صح', 'غلط'],
+    correctIndex: 0,
+    replies: ['عليك نووور', 'لالا']
+  },
+  {
+    kind: 'choice',
+    q: 'الدنمارك جوها بارد اغلب السنة',
+    options: ['صح', 'غلط'],
+    correctIndex: 0,
+    replies: ['عليك نووور', 'لالا']
+  }
+];
+
+/* every question loops until she picks the correct answer before moving on */
+async function askCountriesQuestion(qData, ctx){
+  resetQA(ctx.question, ctx.options, ctx.dots, ctx.reply);
+  ctx.question.textContent = qData.q;
+  nextFrame(function(){ ctx.question.classList.add('show'); });
+  await wait(900);
+
+  var attempt = 0;
+  while(true){
+    var labels, correctPos;
+    if(qData.kind === 'flag'){
+      var order = shuffle([0,1,2]);
+      labels = order.map(function(i){ return qData.flags[i]; });
+      correctPos = order.indexOf(0);
+    } else {
+      labels = qData.options;
+      correctPos = qData.correctIndex;
+    }
+
+    var btns = await renderOptionsStaggered(ctx.options, labels, 2000, qData.kind==='flag');
+    var idx = await waitForChoice(btns);
+    var isCorrect = (idx === correctPos);
+    var msg = qData.kind === 'flag'
+      ? (isCorrect ? qData.correctMsg : qData.wrongMsgs[Math.min(attempt, qData.wrongMsgs.length-1)])
+      : qData.replies[idx];
+
+    if(!isCorrect){ btns[idx].classList.add('shake'); }
+    await dotsThenReply(ctx.dots, ctx.reply, msg, isCorrect ? 1800 : 1600);
+
+    if(isCorrect) break;
+
+    attempt++;
+    ctx.options.innerHTML = '';
+    ctx.reply.classList.remove('show');
+    ctx.dots.classList.remove('show');
+    await wait(500);
+  }
+
+  audioEngine.playPageFlip();
+  ctx.question.classList.remove('show');
+  ctx.reply.classList.remove('show');
+  await wait(700);
+}
+
+async function runChapterCountries(){
+  showScene('scene-countries');
+  placeHeroHeart('heart--pinned');
+  await showHeroHeart(1400);
+  startHeartbeat(1200, 0.4);
+  var ctx = { question:$('co-question'), options:$('co-options'), dots:$('co-dots'), reply:$('co-reply') };
+  for(var i=0;i<countryQuestions.length;i++){
+    await askCountriesQuestion(countryQuestions[i], ctx);
+  }
+  await transitionToChapter('Chapter 4', 'الهدايا', 3000, runChapter3);
+}
+
+/* =========================================================
+   CHAPTER 4 — الهدايا
+   ========================================================= */
+var giftData = [
+  { emoji: '🍦', label: 'آيس كريم' },
+  { emoji: '⏰', label: 'ساعة' },
+  { emoji: '🖤', label: 'قلبي' }
+];
+
+async function runChapter3(){
+  showScene('scene-chapter3');
+  placeHeroHeart('heart--pinned');
+  await showHeroHeart(1000);
+  startHeartbeat(1200, 0.4);
+
+  var introEl = $('c3-intro');
+  var boxesEl = $('c3-boxes');
+  var noteEl = $('c3-note');
+  var continueBtn = $('c3-continue');
+  introEl.classList.remove('show');
+  introEl.textContent = 'طبعا مستحيل يكون عيد ميلاد بدون هدايا! هاك';
+  boxesEl.innerHTML = '';
+  noteEl.textContent = ''; noteEl.classList.remove('show');
+  continueBtn.style.opacity = '0';
+
+  nextFrame(function(){ introEl.classList.add('show'); });
+  await wait(1600);
+
+  var boxEls = [];
+  for(var i=0;i<giftData.length;i++){
+    var g = giftData[i];
+    var box = document.createElement('div');
+    box.className = 'gift-box';
+    box.innerHTML =
+      '<div class="gift-inner">'+
+        '<div class="gift-face gift-front"><span class="ribbon-icon">🎁</span></div>'+
+        '<div class="gift-face gift-back"><span class="g-emoji">'+g.emoji+'</span><span class="g-label">'+g.label+'</span></div>'+
+      '</div>';
+    boxesEl.appendChild(box);
+    (function(el){ nextFrame(function(){ el.classList.add('show'); }); })(box);
+    boxEls.push(box);
+    await wait(1900);
+  }
+
+  await new Promise(function(resolve){
+    var opened = 0;
+    boxEls.forEach(function(box){
+      box.addEventListener('click', function handler(){
+        if(box.classList.contains('opened')) return;
+        box.classList.add('opened');
+        audioEngine.playChime(true);
+        opened++;
+        if(opened===boxEls.length){ resolve(); }
+      });
+    });
+  });
+
+  await wait(900);
+  noteEl.textContent = 'لو كان في طريقة اجيب هدايا زي الناس كان جبتها والله...';
+  nextFrame(function(){ noteEl.classList.add('show'); });
+  await wait(1400);
+  continueBtn.style.opacity = '1';
+
+  await new Promise(function(resolve){
+    continueBtn.addEventListener('click', function once(){
+      continueBtn.removeEventListener('click', once);
+      audioEngine.playTap();
+      resolve();
+    });
+  });
+
+  await transitionToChapter('Chapter 5', 'الملفات', 3000, runChapter4);
+}
+
+/* =========================================================
+   CHAPTER 5 — الملفات  (core + folders 1 & 2)
+   ========================================================= */
+var folderState = [
+  { id:1, unlocked:false, reveal:'شخصيتك حنونه, بتهتمي بالناس ومرات على حساب نفسك, مراعية شديد وبتفكري صح (الا كان معاي بتتكلمي بس هه)', game:'memory' },
+  { id:2, unlocked:false, reveal:'بتتفهمي سريع, ما محتاج اشرح ليك ولا ابرر اغلب الحاجات, بتختي حسن الظن اول وبتتأملي الاحسن!', game:'math' },
+  { id:3, unlocked:false, reveal:'محل ثقه.', game:'quiz' },
+  { id:4, unlocked:false, reveal:'مسؤولة.', game:'match' },
+  { id:5, unlocked:false, reveal:'LOVE YOU TOO', game:'password' }
+];
+var folderTiles = [];
+
+function refreshFolderGridVisual(){
+  folderTiles.forEach(function(item){
+    if(item.folder.unlocked){
+      item.el.classList.add('unlocked');
+      item.el.querySelector('.f-icon').textContent = '💌';
+    }
+  });
+}
+
+async function openFolder(folder){
+  openModal();
+  modalBody.innerHTML = '';
+  if(folder.unlocked){
+    modalBody.innerHTML = '<div class="modal-reveal">'+folder.reveal+'</div>';
+    return;
+  }
+  var result;
+  if(folder.game==='memory'){ result = await playMemoryGame(modalBody); }
+  else if(folder.game==='math'){ result = await playMathGame(modalBody); }
+  else if(folder.game==='quiz'){ result = await playQuizGame(modalBody); }
+  else if(folder.game==='match'){ result = await playMatchGame(modalBody); }
+  else if(folder.game==='password'){ result = await playPasswordGame(modalBody); }
+
+  if(result==='skip'){
+    closeModal();
+    await wait(300);
+    await transitionToChapter('Chapter 6', 'الخاتمة', 3000, runChapter5);
+    return;
+  }
+  if(result===true){
+    folder.unlocked = true;
+    audioEngine.playChime(true);
+    modalBody.innerHTML = '<div class="modal-reveal">'+folder.reveal+'</div>';
+    refreshFolderGridVisual();
+  }
+}
+
+/* ---- folder 1: memory / order-recall minigame ---- */
+var memoryItems = [ {emoji:'🌳'}, {emoji:'🍎'}, {emoji:'🏠'}, {emoji:'🎈'}, {emoji:'❤️'} ];
+function playMemoryGame(container){
+  return new Promise(function(resolve){
+    container.innerHTML =
+      '<div class="modal-title">تحدي الذاكرة</div>'+
+      '<div class="mem-grid" id="mem-grid"></div>'+
+      '<div class="modal-msg" id="mem-msg"></div>';
+    var grid = container.querySelector('#mem-grid');
+    var msg = container.querySelector('#mem-msg');
+    var cardEls = memoryItems.map(function(item){
+      var c = document.createElement('div');
+      c.className = 'mem-card disabled';
+      c.textContent = item.emoji;
+      grid.appendChild(c);
+      return c;
+    });
+    var sequence = [];
+    var userSeq = [];
+    var accepting = false;
+
+    cardEls.forEach(function(c, idx){
+      c.addEventListener('click', function(){
+        if(!accepting) return;
+        userSeq.push(idx);
+        audioEngine.playTap();
+        var pos = userSeq.length - 1;
+        if(sequence[pos] !== idx){
+          accepting = false;
+          c.classList.add('wrong');
+          cardEls.forEach(function(x){ x.classList.add('disabled'); });
+          msg.textContent = 'ذاكرة تعبانة, حاولي تاني';
+          setTimeout(function(){ c.classList.remove('wrong'); startRound(); }, 1300);
+          return;
+        }
+        c.classList.add('correct');
+        setTimeout(function(){ c.classList.remove('correct'); }, 400);
+        if(userSeq.length === sequence.length){
+          accepting = false;
+          cardEls.forEach(function(x){ x.classList.add('disabled'); });
+          setTimeout(function(){ resolve(true); }, 500);
+        }
+      });
+    });
+
+    async function startRound(){
+      accepting = false;
+      userSeq = [];
+      cardEls.forEach(function(c){ c.classList.remove('correct','wrong'); c.classList.add('disabled'); });
+      msg.textContent = 'اتفرجي كويس...';
+      await wait(500);
+      sequence = shuffle([0,1,2,3,4]);
+      for(var i=0;i<sequence.length;i++){
+        var c = cardEls[sequence[i]];
+        c.classList.add('flash');
+        audioEngine.playTap();
+        await wait(560);
+        c.classList.remove('flash');
+        await wait(220);
+      }
+      msg.textContent = 'دورك... رتبيها زي ما شفتيها';
+      cardEls.forEach(function(c){ c.classList.remove('disabled'); });
+      accepting = true;
+    }
+    startRound();
+  });
+}
+
+/* ---- folder 2: math minigame ---- */
+function playMathGame(container){
+  return new Promise(function(resolve){
+    container.innerHTML =
+      '<div class="modal-title">لغز صغير</div>'+
+      '<div class="math-eq">3 + 3 × 5 + 1 + 9 - 2 = ؟</div>'+
+      '<input type="tel" inputmode="numeric" pattern="[0-9]*" class="field-input ltr" id="math-input" autocomplete="off" autocorrect="off" spellcheck="false">'+
+      '<button class="btn-submit show" id="math-submit" style="margin-top:20px;">تأكيد</button>'+
+      '<div class="modal-msg" id="math-msg"></div>';
+    var input = container.querySelector('#math-input');
+    var btn = container.querySelector('#math-submit');
+    var msg = container.querySelector('#math-msg');
+    btn.addEventListener('click', function(){
+      var val = parseInt(input.value, 10);
+      audioEngine.playTap();
+      if(val === 26){ resolve(true); }
+      else {
+        msg.textContent = 'دكتوره منال تزعل منك؟';
+        input.value = '';
+        input.classList.add('shake');
+        setTimeout(function(){ input.classList.remove('shake'); }, 400);
+      }
+    });
+  });
+}
+
+/* ---- folder 3: quiz minigame ---- */
+function playQuizGame(container){
+  return new Promise(function(resolve){
+    container.innerHTML =
+      '<div class="modal-title">سؤال شخصي</div>'+
+      '<div style="font-size:1.05rem;line-height:1.7;">شنو الحاجة البتعجبني فيك:</div>'+
+      '<div class="quiz-options" id="quiz-opts"></div>'+
+      '<div class="modal-msg" id="quiz-msg"></div>';
+    var opts = container.querySelector('#quiz-opts');
+    var msg = container.querySelector('#quiz-msg');
+    var labels = ['خارجياتي', 'عيوني', 'شخصيتي', 'كل ما سبق'];
+    var btns = labels.map(function(label, idx){
+      var b = document.createElement('button');
+      b.className = 'option-btn show';
+      b.style.opacity = '1'; b.style.transform = 'none';
+      b.type = 'button';
+      b.textContent = label;
+      b.addEventListener('click', function(){
+        audioEngine.playTap();
+        if(idx===3){
+          msg.textContent = 'عليك نووور';
+          btns.forEach(function(x){ x.classList.add('disabled'); });
+          setTimeout(function(){ resolve(true); }, 1100);
+        } else {
+          msg.textContent = 'حصل, لكن لا!';
+          b.classList.add('shake');
+          setTimeout(function(){ b.classList.remove('shake'); }, 400);
+        }
+      });
+      opts.appendChild(b);
+      return b;
+    });
+  });
+}
+
+/* ---- folder 4: matching minigame ---- */
+var matchPairs = [
+  { left:'تيت تيت', right:'الشبكة كعبة' },
+  { left:'شتت', right:'كل الحبايب' },
+  { left:'لجين', right:'محمد' }
+];
+function playMatchGame(container){
+  return new Promise(function(resolve){
+    container.innerHTML =
+      '<div class="modal-title">وصلي كل كلمة بمعناها</div>'+
+      '<div class="match-cols"><div class="match-col" id="match-left"></div><div class="match-col" id="match-right"></div></div>'+
+      '<div class="modal-msg" id="match-msg"></div>';
+    var leftCol = container.querySelector('#match-left');
+    var rightCol = container.querySelector('#match-right');
+    var leftOrder = shuffle([0,1,2]);
+    var rightOrder = shuffle([0,1,2]);
+    var leftEls = leftOrder.map(function(i){
+      var el = document.createElement('div');
+      el.className = 'match-item'; el.textContent = matchPairs[i].left; el.dataset.idx = i;
+      leftCol.appendChild(el);
+      return el;
+    });
+    var rightEls = rightOrder.map(function(i){
+      var el = document.createElement('div');
+      el.className = 'match-item'; el.textContent = matchPairs[i].right; el.dataset.idx = i;
+      rightCol.appendChild(el);
+      return el;
+    });
+    var selectedLeft = null;
+    var matchedCount = 0;
+    leftEls.forEach(function(el){
+      el.addEventListener('click', function(){
+        if(el.classList.contains('matched')) return;
+        audioEngine.playTap();
+        leftEls.forEach(function(x){ x.classList.remove('selected'); });
+        el.classList.add('selected');
+        selectedLeft = el;
+      });
+    });
+    rightEls.forEach(function(el){
+      el.addEventListener('click', function(){
+        if(el.classList.contains('matched') || !selectedLeft) return;
+        audioEngine.playTap();
+        if(selectedLeft.dataset.idx === el.dataset.idx){
+          selectedLeft.classList.add('matched'); selectedLeft.classList.remove('selected');
+          el.classList.add('matched');
+          selectedLeft = null;
+          matchedCount++;
+          if(matchedCount === matchPairs.length){ setTimeout(function(){ resolve(true); }, 500); }
+        } else {
+          var sl = selectedLeft;
+          sl.classList.add('shake'); el.classList.add('shake');
+          setTimeout(function(){ sl.classList.remove('shake'); el.classList.remove('shake'); sl.classList.remove('selected'); }, 420);
+          selectedLeft = null;
+        }
+      });
+    });
+  });
+}
+
+/* ---- folder 5: password minigame ---- */
+function playPasswordGame(container){
+  return new Promise(function(resolve){
+    container.innerHTML =
+      '<div class="modal-title">كلمة السر</div>'+
+      '<input type="text" class="field-input" id="pw-input" dir="rtl" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="اكتبي كلمة السر">'+
+      '<button class="btn-submit show" id="pw-submit" style="margin-top:20px;">فتح</button>'+
+      '<div class="hint-text" id="pw-hint"></div>'+
+      '<button class="btn-ghost" id="pw-skip" style="margin-top:18px;">تخطي الآن، ارجعي لاحقاً</button>';
+    var input = container.querySelector('#pw-input');
+    var btn = container.querySelector('#pw-submit');
+    var hint = container.querySelector('#pw-hint');
+    var skipBtn = container.querySelector('#pw-skip');
+    var attempted = false;
+    btn.addEventListener('click', function(){
+      audioEngine.playTap();
+      if(input.value.trim() === 'بحبك'){ resolve(true); }
+      else {
+        if(!attempted){ attempted = true; hint.textContent = 'كلمة السر عند محمد, شيليها منو'; }
+        input.classList.add('shake');
+        setTimeout(function(){ input.classList.remove('shake'); }, 400);
+        input.value = '';
+      }
+    });
+    skipBtn.addEventListener('click', function(){
+      audioEngine.playTap();
+      resolve('skip');
+    });
+  });
+}
+
+/* ---- runChapter4: intro + folder grid + continue ---- */
+async function runChapter4(){
+  showScene('scene-chapter4');
+  placeHeroHeart('heart--pinned');
+  await showHeroHeart(1000);
+  startHeartbeat(1200, 0.4);
+
+  var introEl = $('c4-intro');
+  var grid = $('c4-grid');
+  var continueBtn = $('c4-continue');
+  introEl.classList.remove('show');
+  introEl.textContent = 'كل وحده من الملفات دي فيها حاجات انا بشوفها فيك, عشان تفتحيها لازم تفوزي في التحديات!';
+  grid.innerHTML = '';
+  folderTiles = [];
+  continueBtn.style.opacity = '0';
+
+  nextFrame(function(){ introEl.classList.add('show'); });
+  await wait(1600);
+
+  for(var i=0;i<folderState.length;i++){
+    (function(folder, idx){
+      var t = document.createElement('div');
+      t.className = 'folder-tile' + (folder.unlocked ? ' unlocked' : '');
+      t.innerHTML = '<span class="f-icon">'+(folder.unlocked?'💌':'🔒')+'</span><span class="f-label">الملف '+(idx+1)+'</span>';
+      t.addEventListener('click', function(){ openFolder(folder); });
+      grid.appendChild(t);
+      nextFrame(function(){ t.classList.add('show'); });
+      folderTiles.push({ folder:folder, el:t });
+    })(folderState[i], i);
+    await wait(500);
+  }
+
+  await wait(800);
+  continueBtn.style.opacity = '1';
+
+  await new Promise(function(resolve){
+    continueBtn.addEventListener('click', function once(){
+      continueBtn.removeEventListener('click', once);
+      audioEngine.playTap();
+      resolve();
+    });
+  });
+
+  await transitionToChapter('Chapter 6', 'الخاتمة', 3000, runChapter5);
+}
+
+/* =========================================================
+   CHAPTER 6 — الخاتمة
+   ========================================================= */
+function switchThemeToLove(){
+  document.body.classList.add('love');
+  $('bg-love').classList.add('show');
+  var meta = $('themeColorMeta');
+  if(meta){ meta.setAttribute('content', '#5c1030'); }
+}
+function switchThemeToDark(){
+  document.body.classList.remove('love');
+  $('bg-love').classList.remove('show');
+  var meta = $('themeColorMeta');
+  if(meta){ meta.setAttribute('content', '#050308'); }
+}
+function descendHeroHeartToCenter(){
+  return new Promise(function(resolve){
+    heroHeart.classList.add('heart--move');
+    heroHeart.classList.remove('heart--pinned');
+    heroHeart.classList.add('heart--center');
+    setTimeout(resolve, 2500);
+  });
+}
+async function acceleratingHeartbeat(totalMs){
+  var startGap = 1100, endGap = 260;
+  var elapsed = 0, gap = startGap;
+  var steps = [];
+  while(elapsed < totalMs){
+    steps.push(gap);
+    elapsed += gap;
+    gap = Math.max(endGap, gap*0.83);
+  }
+  for(var i=0;i<steps.length;i++){
+    audioEngine.playHeartbeatPulse(1 + i*0.03);
+    pulseHeroHeart();
+    await wait(steps[i]);
+  }
+}
+function explodeHeart(){
+  return new Promise(function(resolve){
+    var rect = heroHeart.getBoundingClientRect();
+    var cx = rect.left + rect.width/2, cy = rect.top + rect.height/2;
+    var container = $('particle-layer');
+    var flash = $('explosion-flash');
+    heroHeart.style.transition = 'opacity .15s ease';
+    heroHeart.style.opacity = '0';
+    audioEngine.playSwell();
+    flash.style.left = cx+'px'; flash.style.top = cy+'px';
+    flash.animate([
+      {opacity:0, transform:'translate(-50%,-50%) scale(.2)'},
+      {opacity:.9, transform:'translate(-50%,-50%) scale(3)', offset:.25},
+      {opacity:0, transform:'translate(-50%,-50%) scale(6)'}
+    ], {duration:1200, easing:'ease-out', fill:'forwards'});
+    var count = 34;
+    for(var i=0;i<count;i++){
+      var p = document.createElement('div');
+      p.className = 'heart-particle';
+      p.textContent = '🤍';
+      p.style.left = cx+'px'; p.style.top = cy+'px';
+      container.appendChild(p);
+      var angle = Math.random()*Math.PI*2;
+      var dist = 120+Math.random()*220;
+      var dx = Math.cos(angle)*dist, dy = Math.sin(angle)*dist;
+      var rot = (Math.random()*360-180);
+      var dur = 1100+Math.random()*700;
+      var pAnim = p.animate([
+        {transform:'translate(-50%,-50%) translate(0,0) scale(.4) rotate(0deg)', opacity:1},
+        {transform:'translate(-50%,-50%) translate('+(dx*0.6)+'px,'+(dy*0.6)+'px) scale(1.1) rotate('+(rot*0.6)+'deg)', opacity:1, offset:.55},
+        {transform:'translate(-50%,-50%) translate('+dx+'px,'+dy+'px) scale(.7) rotate('+rot+'deg)', opacity:0}
+      ], {duration:dur, easing:'cubic-bezier(.16,.8,.3,1)', fill:'forwards'});
+      (function(el){ pAnim.onfinish = function(){ el.remove(); }; })(p);
+    }
+    setTimeout(function(){ container.innerHTML=''; resolve(); }, 2100);
+  });
+}
+function spawnSparkles(durationMs){
+  var container = $('particle-layer');
+  var interval = setInterval(function(){
+    var s = document.createElement('div');
+    s.className = 'sparkle';
+    var size = (Math.random()*3+1.5).toFixed(1);
+    s.style.width = size+'px'; s.style.height = size+'px';
+    s.style.left = (20+Math.random()*60)+'%';
+    s.style.top = '78%';
+    s.style.opacity = '0';
+    container.appendChild(s);
+    var anim = s.animate([
+      {transform:'translateY(0)', opacity:0},
+      {transform:'translateY(-40px)', opacity:.9, offset:.3},
+      {transform:'translateY(-160px)', opacity:0}
+    ], {duration:3200+Math.random()*1200, easing:'ease-out', fill:'forwards'});
+    anim.onfinish = function(){ s.remove(); };
+  }, 260);
+  setTimeout(function(){ clearInterval(interval); }, durationMs);
+}
+
+async function runChapter5(){
+  showScene('scene-chapter5');
+  placeHeroHeart('heart--pinned');
+  await showHeroHeart(1200);
+  startHeartbeat(1200, 0.4);
+  await wait(1600);
+
+  stopHeartbeat();
+  await descendHeroHeartToCenter();
+  heroHeart.classList.remove('heart--move');
+
+  await wait(300);
+  await acceleratingHeartbeat(7000);
+  await explodeHeart();
+
+  switchThemeToLove();
+  await wait(1200);
+
+  await showText($('c5-text1'), {holdMs:5000, fadeInMs:2000, fadeOutMs:2600});
+  await showText($('c5-text2'), {holdMs:3000, fadeInMs:1800, fadeOutMs:1800});
+
+  var finalEl = $('c5-final');
+  nextFrame(function(){ finalEl.classList.add('show'); });
+  spawnSparkles(11000);
+  await wait(10000);
+
+  $('c5-buttons').classList.add('show');
+}
+
+/* =========================================================
+   BOOTSTRAP — gate, mute toggle, end-screen buttons
+   ========================================================= */
+var gateEl = $('scene-gate');
+var muteBtn = $('mute-toggle');
+var experienceStarted = false;
+
+gateEl.addEventListener('click', function startExperience(){
+  if(experienceStarted) return;
+  experienceStarted = true;
+  audioEngine.init();
+  audioEngine.resume();
+  muteBtn.classList.add('show');
+  runIntro();
+});
+
+muteBtn.addEventListener('click', function(){
+  var m = !audioEngine.muted;
+  audioEngine.setMuted(m);
+  muteBtn.textContent = m ? '🔇' : '🔊';
+});
+
+$('btn-restart').addEventListener('click', function(){
+  audioEngine.playTap();
+  location.reload();
+});
+
+$('btn-close-app').addEventListener('click', function(){
+  audioEngine.playTap();
+  try{ window.close(); }catch(e){}
+  setTimeout(function(){
+    switchThemeToDark();
+    showScene('scene-closing');
+  }, 350);
+});
+
+$('btn-back-folder5').addEventListener('click', async function(){
+  audioEngine.playTap();
+  switchThemeToDark();
+  $('c5-buttons').classList.remove('show');
+  $('c5-final').classList.remove('show');
+  $('c5-text1').style.opacity = '0';
+  $('c5-text2').style.opacity = '0';
+  showScene('scene-chapter4');
+  placeHeroHeart('heart--pinned');
+  await showHeroHeart(800);
+  startHeartbeat(1200, 0.4);
+  await wait(400);
+  openFolder(folderState[4]);
+});
+
+})();
+
+</script>
+</body>
+</html>
